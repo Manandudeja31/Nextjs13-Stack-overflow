@@ -8,10 +8,10 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
 
+  //   Todo: Add the webhook secret to your .env file
   const WEBHOOK_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
-    console.error("Webhook secret is missing");
     throw new Error(
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
     );
@@ -25,11 +25,6 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error("Missing Svix headers", {
-      svix_id,
-      svix_timestamp,
-      svix_signature,
-    });
     return new Response("Error occured -- no svix headers", {
       status: 400,
     });
@@ -53,73 +48,54 @@ export async function POST(req: Request) {
     }) as WebhookEvent;
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return new Response("Error occurred", {
+    return new Response("Error occured", {
       status: 400,
     });
   }
 
   // Do something with the payload
+  // For this guide, you simply log the payload to the console
   const eventType = evt.type;
-  console.log({ eventType, evtData: evt.data });
+  console.log({ eventType });
+  if (eventType === "user.created") {
+    const { id, email_addresses, image_url, username, first_name, last_name } =
+      evt.data;
 
-  try {
-    if (eventType === "user.created") {
-      const {
-        id,
-        email_addresses,
-        image_url,
-        username,
-        first_name,
-        last_name,
-      } = evt.data;
+    const mongoUser = await createUser({
+      clerkId: id,
+      name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
+      username: username!,
+      email: email_addresses[0].email_address,
+      picture: image_url,
+    });
 
-      const mongoUser = await createUser({
-        clerkId: id,
+    return NextResponse.json({ message: "USER created", user: mongoUser });
+  }
+
+  if (eventType === "user.updated") {
+    const { id, email_addresses, image_url, username, first_name, last_name } =
+      evt.data;
+
+    const mongoUser = await updateUser({
+      clerkId: id,
+      updateData: {
         name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
         username: username!,
         email: email_addresses[0].email_address,
         picture: image_url,
-      });
-
-      return NextResponse.json({ message: "OK", user: mongoUser });
-    }
-
-    if (eventType === "user.updated") {
-      const {
-        id,
-        email_addresses,
-        image_url,
-        username,
-        first_name,
-        last_name,
-      } = evt.data;
-
-      const mongoUser = await updateUser({
-        clerkId: id,
-        updateData: {
-          name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
-          username: username!,
-          email: email_addresses[0].email_address,
-          picture: image_url,
-        },
-        path: `/profile/${id}`,
-      });
-
-      return NextResponse.json({ message: "OK", user: mongoUser });
-    }
-
-    if (eventType === "user.deleted") {
-      const { id } = evt.data;
-      const deletedUser = await deleteUser({
-        clerkId: id!,
-      });
-      return NextResponse.json({ message: "OK", user: deletedUser });
-    }
-  } catch (err) {
-    console.error("Error handling webhook event:", err);
-    return new Response("Error occurred", {
-      status: 500,
+      },
+      path: `/profile/${id}`,
     });
+
+    return NextResponse.json({ message: "USER updated", user: mongoUser });
+  }
+
+  if (eventType === "user.deleted") {
+    const { id } = evt.data;
+    const deletedUser = await deleteUser({
+      clerkId: id!,
+    });
+    return NextResponse.json({ message: "USER deleted", user: deletedUser });
   }
 
   return new Response("", { status: 200 });
