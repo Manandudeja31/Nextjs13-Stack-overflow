@@ -1,4 +1,4 @@
-import { getTopInteractedTags } from "@/lib/actions/tab.actions";
+import { getTopInteractedTags } from "@/lib/actions/tag.actions";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
