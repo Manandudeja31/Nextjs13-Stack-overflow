@@ -43,3 +43,17 @@ export const formatBigNumber = (number: number): string => {
     return number.toString();
   }
 };
+
+export const getMonthYear = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  // Ensure the date is valid
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  const month = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+
+  return `${month} ${year}`;
+};
