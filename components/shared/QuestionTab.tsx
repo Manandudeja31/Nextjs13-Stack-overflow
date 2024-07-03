@@ -4,7 +4,7 @@ import React from "react";
 import QuestionCard from "../cards/QuestionCard";
 interface Props extends SearchParamsProps {
   userId: string;
-  clerkId?: string | undefined;
+  clerkId?: string | null;
 }
 const QuestionTab = async ({ searchParams, userId, clerkId }: Props) => {
   const result = await getUserQuestions({
