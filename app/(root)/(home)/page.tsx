@@ -54,6 +54,7 @@ export default async function Home() {
             <QuestionCard
               key={question._id}
               _id={question._id}
+              clerkId={question.clerkId}
               title={question.title}
               tags={question.tags}
               author={question.author}
