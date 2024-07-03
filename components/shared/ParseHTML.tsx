@@ -24,7 +24,9 @@ import "prismjs/components/prism-sql";
 import "prismjs/components/prism-mongodb";
 import "prismjs/plugins/line-numbers/prism-line-numbers.js";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
-import { Props } from "html-react-parser/lib/attributes-to-props";
+interface Props {
+  data: string;
+}
 const ParseHTML = ({ data }: Props) => {
   useEffect(() => {
     Prism.highlightAll();
