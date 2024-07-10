@@ -14,17 +14,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-interface Params {
+import { ProfileSchema } from "@/lib/validations";
+import { usePathname, useRouter } from "next/navigation";
+import { updateUser } from "@/lib/actions/user.action";
+interface Props {
   clerkId: string;
   user: string;
 }
-const Profile = ({ clerkId, user }: Params) => {
+
+const Profile = ({ clerkId, user }: Props) => {
   const parsedUser = JSON.parse(user);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+  const pathname = usePathname();
+  const form = useForm<z.z.infer<typeof ProfileSchema>>({
+    resolver: zodResolver(ProfileSchema),
     defaultValues: {
       name: parsedUser.name || "",
       username: parsedUser.username || "",
@@ -34,8 +38,27 @@ const Profile = ({ clerkId, user }: Params) => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof ProfileSchema>) {
+    setIsSubmitting(true);
+    try {
+      // update the user
+      await updateUser({
+        clerkId,
+        updateData: {
+          name: values.name,
+          username: values.username,
+          portfolioWebsite: values.portfolioWebsite,
+          location: values.location,
+          bio: values.bio,
+        },
+        path: pathname,
+      });
+      router.back();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -116,7 +139,6 @@ const Profile = ({ clerkId, user }: Params) => {
                 <FormLabel>Location</FormLabel>
                 <FormControl>
                   <Input
-                    type="url"
                     placeholder="Where are you from?"
                     className="no-focus paragraph-regular light-border-2 
                   background-light700_dark300 text-dark300_light700 min-h-[56px]"
@@ -136,7 +158,6 @@ const Profile = ({ clerkId, user }: Params) => {
                 <FormLabel>Bio</FormLabel>
                 <FormControl>
                   <Textarea
-                    type="url"
                     placeholder="What's special about you?"
                     className="no-focus paragraph-regular light-border-2 
                   background-light700_dark300 text-dark300_light700 min-h-[56px]"
