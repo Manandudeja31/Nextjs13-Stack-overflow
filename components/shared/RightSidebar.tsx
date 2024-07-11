@@ -2,73 +2,12 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 import RenderTag from "./RenderTag";
-const hotQuestions = [
-  {
-    _id: "1",
-    title:
-      "Would it be appropriate to point out an error in another paper during a referee report?",
-  },
-  {
-    _id: "2",
-    title: "How can an airconditioning machine exist?",
-  },
-  {
-    _id: "3",
-    title: "Interrogated every time crossing UK Border as citizen",
-  },
-  {
-    _id: "4",
-    title: "Low digit addition generator",
-  },
-  {
-    _id: "5",
-    title: "What is an example of 3 numbers that do not make up a vector?",
-  },
-];
+import { getHotQuestions } from "@/lib/actions/question.action";
+import { getPopularTags } from "@/lib/actions/tag.actions";
 
-const Tags = [
-  {
-    id: "1",
-    name: "Javascript",
-    totalQuestions: 5,
-  },
-  {
-    id: "2",
-    name: "Next.js",
-    totalQuestions: 5,
-  },
-  {
-    id: "3",
-    name: "React.js",
-    totalQuestions: 5,
-  },
-  {
-    id: "4",
-    name: "Node.js",
-    totalQuestions: 5,
-  },
-  {
-    id: "5",
-    name: "Python",
-    totalQuestions: 5,
-  },
-  {
-    id: "6",
-    name: "Microsoft Azure",
-    totalQuestions: 5,
-  },
-  {
-    id: "7",
-    name: "SQL",
-    totalQuestions: 5,
-  },
-  {
-    id: "8",
-    name: "Machine Learning",
-    totalQuestions: 5,
-  },
-];
-const RightSidebar = () => {
+const RightSidebar = async () => {
+  const hotQuestions = await getHotQuestions();
+  const Tags = await getPopularTags();
   return (
     <section
       className=" background-light900_dark200 custom-scrollbar 
@@ -109,7 +48,7 @@ const RightSidebar = () => {
               key={tag.id}
               _id={tag.id}
               name={tag.name}
-              totalQuestions={tag.totalQuestions}
+              totalQuestions={tag.numberofQuestions}
               showCount
             />
           ))}
