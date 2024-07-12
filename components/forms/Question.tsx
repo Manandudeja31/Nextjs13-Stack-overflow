@@ -28,6 +28,7 @@ interface Props {
   mongoUserId: string;
   questionDetails?: string;
 }
+
 const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const { mode } = useTheme();
   const editorRef = useRef(null);
@@ -35,7 +36,16 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const parsedQuestionDetails = JSON.parse(questionDetails || "");
+  let parsedQuestionDetails: any = { tags: [], title: "", content: "" };
+
+  if (questionDetails && questionDetails.trim() !== "") {
+    try {
+      parsedQuestionDetails = JSON.parse(questionDetails);
+    } catch (error) {
+      console.error("Failed to parse questionDetails:", error);
+    }
+  }
+
   const groupedTags = parsedQuestionDetails.tags.map(
     (tag: { name: any }) => tag.name
   );
@@ -78,6 +88,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
       setIsSubmitting(false);
     }
   }
+
   const handlekeydown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     field: any
@@ -111,6 +122,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
     const newTags = field.value.filter((t: string) => t !== tag);
     form.setValue("tags", newTags);
   };
+
   return (
     <Form {...form}>
       <form
