@@ -5,9 +5,12 @@ import React from "react";
 import { getAllTags } from "@/lib/actions/tag.actions";
 import Link from "next/link";
 import NoResult from "@/components/shared/NoResult";
+import { SearchParamsProps } from "@/types";
 
-const page = async () => {
-  const result = await getAllTags({});
+const page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getAllTags({
+    searchQuery: searchParams.q,
+  });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Tags</h1>
@@ -17,7 +20,7 @@ const page = async () => {
       max-sm:flex-col sm:items-center"
       >
         <LocalSearchbar
-          route="/community"
+          route="/tags"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search by tag name..."

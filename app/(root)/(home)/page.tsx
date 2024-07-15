@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -7,9 +8,12 @@ import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
 
-export default async function Home() {
-  const result = await getQuestions({});
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
@@ -20,8 +24,8 @@ export default async function Home() {
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
         <Link href="/ask-question" className="flex justify-end max-sm:w-full">
           <Button
-            className="primary-gradient min-h-[46px]
-          px-4 py-3 !text-light-900"
+            className="primary-gradient !text-light-900
+          min-h-[46px] px-4 py-3"
           >
             Ask a Question
           </Button>
