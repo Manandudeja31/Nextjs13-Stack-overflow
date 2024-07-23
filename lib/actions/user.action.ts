@@ -17,8 +17,6 @@ import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
-import { skip } from "node:test";
-import { Users } from "lucide-react";
 import { BadgeCriteriaType } from "@/types";
 import { assignbadges } from "../utils";
 
