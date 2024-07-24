@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   question: string;
@@ -37,6 +38,12 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     },
   });
   const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
+    if (!authorId) {
+      return toast({
+        title: "Please Login",
+        description: "You need to login to perform this action",
+      });
+    }
     setIsSubmitting(true);
 
     try {
@@ -54,6 +61,9 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
         editor.setContent("");
       }
+      return toast({
+        title: "Answer is Posted Successfully",
+      });
     } catch (error) {
       console.log(error);
     } finally {

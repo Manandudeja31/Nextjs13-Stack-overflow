@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
 import { z } from "zod";
 import { useTheme } from "@/context/ThemeProvider";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type?: string;
@@ -74,6 +75,9 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
         });
         router.push("/");
       }
+      return toast({
+        title: "Question is Posted Successfully",
+      });
     } catch (error) {
     } finally {
       setIsSubmitting(false);

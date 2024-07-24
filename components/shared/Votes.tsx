@@ -11,6 +11,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import router from "next/router";
 import React, { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 interface Props {
   type: string;
   itemId: string;
@@ -39,10 +40,17 @@ const Votes = ({
       questionId: JSON.parse(itemId),
       path: pathname,
     });
+    return toast({
+      title: `Question ${!hasSaved ? "Saved in" : "Removed from"} your collection`,
+      variant: !hasSaved ? "default" : "destructive",
+    });
   };
   const handleVote = async (action: string) => {
     if (!userId) {
-      return;
+      return toast({
+        title: "Please Login",
+        description: "You need to login to perform this action",
+      });
     }
 
     if (action === "upvote") {
@@ -63,6 +71,11 @@ const Votes = ({
           path: pathname,
         });
       }
+
+      return toast({
+        title: `Upvote ${!hasupVoted ? "Successful" : "Removed"}`,
+        variant: !hasupVoted ? "default" : "destructive",
+      });
     }
 
     if (action === "downvote") {
@@ -83,6 +96,10 @@ const Votes = ({
           path: pathname,
         });
       }
+      return toast({
+        title: `Downvote ${!hasupVoted ? "Successful" : "Removed"}`,
+        variant: !hasdownVoted ? "default" : "destructive",
+      });
     }
   };
 
