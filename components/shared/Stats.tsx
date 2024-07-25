@@ -24,7 +24,6 @@ const StatsCard = ({ imgUrl, value, title }: StatsCardProps) => {
       <Image src={imgUrl} alt={title} width={40} height={40} />
       <div>
         <p className="paragraph-semibold text-dark200_light900">{value}</p>
-        <p className="body-medium text-dark400_light700">{title}</p>
       </div>
       {title}
     </div>
