@@ -16,6 +16,7 @@ interface QuestionProps {
     _id: string;
     name: string;
     picture: string;
+    clerkId: string;
   };
   upvotes: string[];
   views: number;
@@ -34,7 +35,7 @@ const QuestionCard = ({
   answers,
   createdAt,
 }: QuestionProps) => {
-  const showActionButtons = clerkId && clerkId === author._id;
+  const showActionButtons = clerkId && clerkId === author.clerkId;
   return (
     <div
       className="card-wrapper rounded-[10px] 
