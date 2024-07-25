@@ -8,6 +8,7 @@ import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { getTimestamp, formatBigNumber } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,6 +17,8 @@ import React from "react";
 const page = async ({ params, searchParams }: any) => {
   const { userId: clerkId } = auth();
   let mongoUser;
+
+  if (!clerkId) redirect("/sign-up");
 
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId });
