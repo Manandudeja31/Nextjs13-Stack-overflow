@@ -25,7 +25,7 @@ const StatsCard = ({ imgUrl, value, title }: StatsCardProps) => {
       <div>
         <p className="paragraph-semibold text-dark200_light900">{value}</p>
       </div>
-      {title}
+      <div className="body-medium text-dark400_light700">{title}</div>
     </div>
   );
 };

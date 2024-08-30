@@ -8,8 +8,7 @@ import {
 import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { formatBigNumber } from "@/lib/utils";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import router from "next/router";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "../ui/use-toast";
 interface Props {
@@ -33,7 +32,7 @@ const Votes = ({
   hasSaved,
 }: Props) => {
   const pathname = usePathname();
-
+  const router = useRouter();
   const handleSave = async () => {
     await toggleSaveQuestion({
       userId: JSON.parse(userId),
